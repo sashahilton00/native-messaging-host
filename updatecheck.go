@@ -1,5 +1,5 @@
 // updatecheck.go - Reads and find latest update from updates.xml.
-// Copyright (c) 2018 - 2020  Richard Huang <rickypc@users.noreply.github.com>
+// Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -14,7 +14,7 @@ import (
 
 // An App is represent one application returned by updates.xml.
 //
-//     <app appid='tld.domain.sub.app.name'></app>
+//	<app appid='tld.domain.sub.app.name'></app>
 type App struct {
 	AppId   *string   `xml:"appid,attr"`
 	Updates []*Update `xml:"updatecheck"`
@@ -25,7 +25,7 @@ type App struct {
 // It can have target OS optionally. This is an extended attribute that is not
 // part of original Google Chrome update manifest.
 //
-//   <updatecheck codebase='https://sub.domain.tld/app.download.all' os='darwin' version='1.0.0' />
+//	<updatecheck codebase='https://sub.domain.tld/app.download.all' os='darwin' version='1.0.0' />
 type Update struct {
 	Goos    *string `xml:"os,attr"`
 	Url     *string `xml:"codebase,attr"`
@@ -36,7 +36,7 @@ type Update struct {
 // borrowed from Google's Omaha.
 // See https://developer.chrome.com/apps/autoupdate#update_manifest
 //
-//   <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'></gupdate>
+//	<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'></gupdate>
 type UpdateCheckResponse struct {
 	Apps    []*App   `xml:"app"`
 	XMLName xml.Name `xml:"gupdate"`

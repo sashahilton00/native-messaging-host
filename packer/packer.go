@@ -1,5 +1,5 @@
 // packer.go - Unpack related functionality.
-// Copyright (c) 2018 - 2020  Richard Huang <rickypc@users.noreply.github.com>
+// Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,23 +9,23 @@
 //
 // * Extract tar.gz content
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   resp := client.MustGetWithContext(ctx, "https://domain.tld")
-//   defer resp.Body.Close()
+//	resp := client.MustGetWithContext(ctx, "https://domain.tld")
+//	defer resp.Body.Close()
 //
-//   packer.Untar(resp.Body, "/path/to/extract")
+//	packer.Untar(resp.Body, "/path/to/extract")
 //
 // * Extract zip content
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   resp := client.MustGetWithContext(ctx, "https://domain.tld")
-//   defer resp.Body.Close()
+//	resp := client.MustGetWithContext(ctx, "https://domain.tld")
+//	defer resp.Body.Close()
 //
-//   packer.Unzip(resp.Body, "/path/to/extract")
+//	packer.Unzip(resp.Body, "/path/to/extract")
 package packer
 
 import (

@@ -1,9 +1,9 @@
-[![Build](https://github.com/rickypc/native-messaging-host/actions/workflows/build.yml/badge.svg)](https://bit.ly/3djObUY)
-[![Coverage](https://img.shields.io/codecov/c/github/rickypc/native-messaging-host)](https://bit.ly/2TwjOyb)
+[![Build](https://github.com/sashahilton00/native-messaging-host/actions/workflows/build.yml/badge.svg)](https://bit.ly/3djObUY)
+[![Coverage](https://img.shields.io/codecov/c/github/sashahilton00/native-messaging-host)](https://bit.ly/2TwjOyb)
 [![Dependabot](https://img.shields.io/badge/dependabot-enabled-025e8c?logo=Dependabot)](https://bit.ly/3Li7tqm)
 [![GoDev](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white&style=flat-square)][4.1]
-[![GoDoc](https://godoc.org/github.com/rickypc/native-messaging-host?status.svg)][4.2]
-[![License](https://img.shields.io/github/license/rickypc/native-messaging-host)][8]
+[![GoDoc](https://godoc.org/github.com/sashahilton00/native-messaging-host?status.svg)][4.2]
+[![License](https://img.shields.io/github/license/sashahilton00/native-messaging-host)][8]
 
 # Native Messaging Host Module for Go
 
@@ -21,7 +21,7 @@ Package documentation can be found on [GoDev][4.1] or [GoDoc][4.2].
 Installation can be done with a normal `go get`:
 
 ```
-$ go get github.com/rickypc/native-messaging-host
+$ go get github.com/sashahilton00/native-messaging-host
 ```
 
 #### Sending Message
@@ -124,7 +124,7 @@ host.Uninstall()
 You can import client package separately.
 
 ```go
-import "github.com/rickypc/native-messaging-host/client"
+import "github.com/sashahilton00/native-messaging-host/client"
 ```
 
 ##### GET call with context

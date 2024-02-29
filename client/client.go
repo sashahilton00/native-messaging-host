@@ -1,5 +1,5 @@
 // client.go - HTTP client related functionality.
-// Copyright (c) 2018 - 2020  Richard Huang <rickypc@users.noreply.github.com>
+// Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -9,39 +9,39 @@
 //
 // * GET call with context
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   resp := client.MustGetWithContext(ctx, "https://domain.tld")
-//   defer resp.Body.Close()
+//	resp := client.MustGetWithContext(ctx, "https://domain.tld")
+//	defer resp.Body.Close()
 //
 // * GET call with tar.gz content
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   client.MustGetAndUntarWithContext(ctx, "https://domain.tld", "/path/to/extract")
+//	client.MustGetAndUntarWithContext(ctx, "https://domain.tld", "/path/to/extract")
 //
 // * GET call with zip content
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   client.MustGetAndUnzipWithContext(ctx, "https://domain.tld", "/path/to/extract")
+//	client.MustGetAndUnzipWithContext(ctx, "https://domain.tld", "/path/to/extract")
 //
 // * POST call with context
 //
-//   ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-//   defer cancel()
+//	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+//	defer cancel()
 //
-//   resp := client.MustPostWithContext(ctx, "https://domain.tld", "application/json", strings.NewReader("{}"))
-//   defer resp.Body.Close()
+//	resp := client.MustPostWithContext(ctx, "https://domain.tld", "application/json", strings.NewReader("{}"))
+//	defer resp.Body.Close()
 package client
 
 import (
 	"context"
 	"crypto/tls"
-	"github.com/rickypc/native-messaging-host/packer"
+	"github.com/sashahilton00/native-messaging-host/packer"
 	"log"
 	"net"
 	"net/http"

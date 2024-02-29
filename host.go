@@ -1,5 +1,5 @@
 // host.go - Native messaging host config, message handler, and else.
-// Copyright (c) 2018 - 2020  Richard Huang <rickypc@users.noreply.github.com>
+// Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,85 +11,85 @@
 //
 // * Sending Message
 //
-//   messaging := (&host.Host{}).Init()
+//	messaging := (&host.Host{}).Init()
 //
-//   // host.H is a shortcut to map[string]interface{}
-//   response := &host.H{"key":"value"}
+//	// host.H is a shortcut to map[string]interface{}
+//	response := &host.H{"key":"value"}
 //
-//   // Write message from response to os.Stdout.
-//   if err := messaging.PostMessage(os.Stdout, response); err != nil {
-//     log.Fatalf("messaging.PostMessage error: %v", err)
-//   }
+//	// Write message from response to os.Stdout.
+//	if err := messaging.PostMessage(os.Stdout, response); err != nil {
+//	  log.Fatalf("messaging.PostMessage error: %v", err)
+//	}
 //
-//   // Log response.
-//   log.Printf("response: %+v", response)
+//	// Log response.
+//	log.Printf("response: %+v", response)
 //
 // * Receiving Message
 //
-//   // Ensure func main returned after calling runtime.Goexit
-//   // See https://golang.org/pkg/runtime/#Goexit.
-//   defer os.Exit(0)
+//	// Ensure func main returned after calling runtime.Goexit
+//	// See https://golang.org/pkg/runtime/#Goexit.
+//	defer os.Exit(0)
 //
-//   messaging := (&host.Host{}).Init()
+//	messaging := (&host.Host{}).Init()
 //
-//   // host.H is a shortcut to map[string]interface{}
-//   request := &host.H{}
+//	// host.H is a shortcut to map[string]interface{}
+//	request := &host.H{}
 //
-//   // Read message from os.Stdin to request.
-//   if err := messaging.OnMessage(os.Stdin, request); err != nil {
-//     log.Fatalf("messaging.OnMessage error: %v", err)
-//   }
+//	// Read message from os.Stdin to request.
+//	if err := messaging.OnMessage(os.Stdin, request); err != nil {
+//	  log.Fatalf("messaging.OnMessage error: %v", err)
+//	}
 //
-//   // Log request.
-//   log.Printf("request: %+v", request)
+//	// Log request.
+//	log.Printf("request: %+v", request)
 //
 // * Install and Uninstall Hooks
 //
-//   // AllowedExts is a list of extensions that should have access to the native messaging host.
-//   // See [native messaging manifest][7]
-//   messaging := (&host.Host{
-//     AppName:     "tld.domain.sub.app.name",
-//     AllowedExts: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
-//   }).Init()
+//	// AllowedExts is a list of extensions that should have access to the native messaging host.
+//	// See [native messaging manifest][7]
+//	messaging := (&host.Host{
+//	  AppName:     "tld.domain.sub.app.name",
+//	  AllowedExts: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
+//	}).Init()
 //
-//   ...
+//	...
 //
-//   // When you need to install.
-//   if err := messaging.Install(); err != nil {
-//     log.Printf("install error: %v", err)
-//   }
+//	// When you need to install.
+//	if err := messaging.Install(); err != nil {
+//	  log.Printf("install error: %v", err)
+//	}
 //
-//   ...
+//	...
 //
-//   // When you need to uninstall.
-//   host.Uninstall()
+//	// When you need to uninstall.
+//	host.Uninstall()
 //
 // * Auto Update Configuration
 //
-//   // updates.xml example for cross platform executable:
-//   <?xml version='1.0' encoding='UTF-8'?>
-//   <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-//     <app appid='tld.domain.sub.app.name'>
-//       <updatecheck codebase='https://sub.domain.tld/app.download.all' version='1.0.0' />
-//     </app>
-//   </gupdate>
+//	// updates.xml example for cross platform executable:
+//	<?xml version='1.0' encoding='UTF-8'?>
+//	<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+//	  <app appid='tld.domain.sub.app.name'>
+//	    <updatecheck codebase='https://sub.domain.tld/app.download.all' version='1.0.0' />
+//	  </app>
+//	</gupdate>
 //
-//   // updates.xml example for individual platform executable:
-//   <?xml version='1.0' encoding='UTF-8'?>
-//   <gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-//     <app appid='tld.domain.sub.app.name'>
-//       <updatecheck codebase='https://sub.domain.tld/app.download.darwin' os='darwin' version='1.0.0' />
-//       <updatecheck codebase='https://sub.domain.tld/app.download.linux' os='linux' version='1.0.0' />
-//       <updatecheck codebase='https://sub.domain.tld/app.download.exe' os='windows' version='1.0.0' />
-//     </app>
-//   </gupdate>
+//	// updates.xml example for individual platform executable:
+//	<?xml version='1.0' encoding='UTF-8'?>
+//	<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
+//	  <app appid='tld.domain.sub.app.name'>
+//	    <updatecheck codebase='https://sub.domain.tld/app.download.darwin' os='darwin' version='1.0.0' />
+//	    <updatecheck codebase='https://sub.domain.tld/app.download.linux' os='linux' version='1.0.0' />
+//	    <updatecheck codebase='https://sub.domain.tld/app.download.exe' os='windows' version='1.0.0' />
+//	  </app>
+//	</gupdate>
 //
-//   // It will do daily update check.
-//   messaging := (&host.Host{
-//     AppName:   "tld.domain.sub.app.name",
-//     UpdateUrl: "https://sub.domain.tld/updates.xml", // It follows [update manifest][2]
-//     Version:   "1.0.0",                              // Current version, it must follow [SemVer][6]
-//   }).Init()
+//	// It will do daily update check.
+//	messaging := (&host.Host{
+//	  AppName:   "tld.domain.sub.app.name",
+//	  UpdateUrl: "https://sub.domain.tld/updates.xml", // It follows [update manifest][2]
+//	  Version:   "1.0.0",                              // Current version, it must follow [SemVer][6]
+//	}).Init()
 package host
 
 import (
@@ -153,7 +153,7 @@ type Host struct {
 // to current executable's absolute path after the evaluation of any symbolic
 // links.
 //
-//   messaging := (&host.Host{}).Init()
+//	messaging := (&host.Host{}).Init()
 func (h *Host) Init() *Host {
 	exec, _ := os.Executable()
 	evaled, _ := filepath.EvalSymlinks(exec)
@@ -185,22 +185,22 @@ func (h *Host) Init() *Host {
 // OnMessage reads message header and message body from given reader and
 // unmarshal to given struct. It will return error when it come across one.
 //
-//   // Ensure func main returned after calling runtime.Goexit
-//   // See https://golang.org/pkg/runtime/#Goexit.
-//   defer os.Exit(0)
+//	// Ensure func main returned after calling runtime.Goexit
+//	// See https://golang.org/pkg/runtime/#Goexit.
+//	defer os.Exit(0)
 //
-//   messaging := (&host.Host{}).Init()
+//	messaging := (&host.Host{}).Init()
 //
-//   // host.H is a shortcut to map[string]interface{}
-//   request := &host.H{}
+//	// host.H is a shortcut to map[string]interface{}
+//	request := &host.H{}
 //
-//   // Read message from os.Stdin to request.
-//   if err := messaging.OnMessage(os.Stdin, request); err != nil {
-//     log.Fatalf("messaging.OnMessage error: %v", err)
-//   }
+//	// Read message from os.Stdin to request.
+//	if err := messaging.OnMessage(os.Stdin, request); err != nil {
+//	  log.Fatalf("messaging.OnMessage error: %v", err)
+//	}
 //
-//   // Log request.
-//   log.Printf("request: %+v", request)
+//	// Log request.
+//	log.Printf("request: %+v", request)
 func (h *Host) OnMessage(reader io.Reader, v interface{}) error {
 	length, err := h.readHeader(reader)
 
@@ -244,18 +244,18 @@ func (h *Host) readHeader(reader io.Reader) (uint32, error) {
 // PostMessage marshals given struct and writes message header and message body
 // to given writer. It will return error when it come across one.
 //
-//   messaging := (&host.Host{}).Init()
+//	messaging := (&host.Host{}).Init()
 //
-//   // host.H is a shortcut to map[string]interface{}
-//   response := &host.H{"key":"value"}
+//	// host.H is a shortcut to map[string]interface{}
+//	response := &host.H{"key":"value"}
 //
-//   // Write message from response to os.Stdout.
-//   if err := messaging.PostMessage(os.Stdout, response); err != nil {
-//     log.Fatalf("messaging.PostMessage error: %v", err)
-//   }
+//	// Write message from response to os.Stdout.
+//	if err := messaging.PostMessage(os.Stdout, response); err != nil {
+//	  log.Fatalf("messaging.PostMessage error: %v", err)
+//	}
 //
-//   // Log response.
-//   log.Printf("response: %+v", response)
+//	// Log response.
+//	log.Printf("response: %+v", response)
 func (h *Host) PostMessage(writer io.Writer, v interface{}) error {
 	message, err := json.Marshal(v)
 	if err != nil {

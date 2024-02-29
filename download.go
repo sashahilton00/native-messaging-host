@@ -1,5 +1,5 @@
 // download.go - Fetch updates.xml and download latest file content.
-// Copyright (c) 2018 - 2020  Richard Huang <rickypc@users.noreply.github.com>
+// Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
@@ -11,7 +11,7 @@ import (
 	"context"
 	"encoding/xml"
 	"fmt"
-	"github.com/rickypc/native-messaging-host/client"
+	"github.com/sashahilton00/native-messaging-host/client"
 	"io"
 	"net/http"
 	"os"

@@ -1,4 +1,4 @@
-module github.com/rickypc/native-messaging-host
+module github.com/sashahilton00/native-messaging-host
 
 go 1.15
 
