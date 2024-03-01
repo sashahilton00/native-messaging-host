@@ -85,13 +85,6 @@ if err := messaging.Install(); err != nil {
 host.Uninstall()
 ```
 
-#### Syntactic Sugar
-
-You can import client package separately.
-
-```go
-import "github.com/sashahilton00/native-messaging-host/client"
-```
 
 Contributing
 -
