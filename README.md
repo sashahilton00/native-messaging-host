@@ -9,9 +9,7 @@
 
 native-messaging-host is a module for sending [native messaging protocol][1]
 message marshalled from struct and receiving [native messaging protocol][1]
-message unmarshalled to struct. native-messaging-host can auto-update itself
-using update URL that response with Google Chrome [update manifest][2],
-as well as it provides hook to install and uninstall manifest file to
+message unmarshalled to struct. native-messaging-host provides hook to install and uninstall manifest file to
 [native messaging host location][3].
 
 ## Installation and Usage
@@ -61,49 +59,17 @@ if err := messaging.OnMessage(os.Stdin, request); err != nil {
 log.Printf("request: %+v", request)
 ```
 
-#### Auto Update Configuration
-
-updates.xml example for cross platform executable:
-
-```xml
-<?xml version='1.0' encoding='UTF-8'?>
-<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-  <app appid='tld.domain.sub.app.name'>
-    <updatecheck codebase='https://sub.domain.tld/app.download.all' version='1.0.0' />
-  </app>
-</gupdate>
-```
-
-updates.xml example for individual platform executable:
-
-```xml
-<?xml version='1.0' encoding='UTF-8'?>
-<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-  <app appid='tld.domain.sub.app.name'>
-    <updatecheck codebase='https://sub.domain.tld/app.download.darwin' os='darwin' version='1.0.0' />
-    <updatecheck codebase='https://sub.domain.tld/app.download.linux' os='linux' version='1.0.0' />
-    <updatecheck codebase='https://sub.domain.tld/app.download.exe' os='windows' version='1.0.0' />
-  </app>
-</gupdate>
-```
-
-```go
-// It will do daily update check.
-messaging := (&host.Host{
-  AppName:   "tld.domain.sub.app.name",
-  UpdateUrl: "https://sub.domain.tld/updates.xml", // It follows [update manifest][2]
-  Version:   "1.0.0",                              // Current version, it must follow [SemVer][6]
-}).Init()
-```
 
 #### Install and Uninstall Hooks
 
 ```go
-// AllowedExts is a list of extensions that should have access to the native messaging host. 
+// AllowedOrigins/AllowedExtensions is a list of extensions that should have access to the native messaging host. 
+// For firefox the extension ID needs to be set in the browser specific settings
 // See [native messaging manifest](https://bit.ly/3aDA1Hv)
 messaging := (&host.Host{
   AppName:     "tld.domain.sub.app.name",
-  AllowedExts: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
+  AllowedOrigins: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
+  AllowedExtensions: []string{"abc@exmple.com"},
 }).Init()
 
 ...
@@ -125,44 +91,6 @@ You can import client package separately.
 
 ```go
 import "github.com/sashahilton00/native-messaging-host/client"
-```
-
-##### GET call with context
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-defer cancel()
-
-resp := client.MustGetWithContext(ctx, "https://domain.tld")
-defer resp.Body.Close()
-```
-
-##### GET call with tar.gz content
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-defer cancel()
-
-client.MustGetAndUntarWithContext(ctx, "https://domain.tld", "/path/to/extract")
-```
-
-##### GET call with zip content
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-defer cancel()
-
-client.MustGetAndUnzipWithContext(ctx, "https://domain.tld", "/path/to/extract")
-```
-
-##### POST call with context
-
-```go
-ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-defer cancel()
-
-resp := client.MustPostWithContext(ctx, "https://domain.tld", "application/json", strings.NewReader("{}"))
-defer resp.Body.Close()
 ```
 
 Contributing

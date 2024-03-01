@@ -45,51 +45,25 @@
 //
 // * Install and Uninstall Hooks
 //
-//	// AllowedExts is a list of extensions that should have access to the native messaging host.
-//	// See [native messaging manifest][7]
-//	messaging := (&host.Host{
-//	  AppName:     "tld.domain.sub.app.name",
-//	  AllowedExts: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
-//	}).Init()
+//		// AllowedOrigins is a list of extensions that should have access to the native messaging host. AllowedExtensions is the firefox equivalent
+//		// See [native messaging manifest][7]
+//		messaging := (&host.Host{
+//		  AppName:     "tld.domain.sub.app.name",
+//		  AllowedOrigins: []string{"chrome-extension://XXX/", "chrome-extension://YYY/"},
+//	   AllowedExtensions: []string{"abc@exmple.com"},
+//		}).Init()
 //
-//	...
+//		...
 //
-//	// When you need to install.
-//	if err := messaging.Install(); err != nil {
-//	  log.Printf("install error: %v", err)
-//	}
+//		// When you need to install.
+//		if err := messaging.Install(); err != nil {
+//		  log.Printf("install error: %v", err)
+//		}
 //
-//	...
+//		...
 //
-//	// When you need to uninstall.
-//	host.Uninstall()
-//
-// * Auto Update Configuration
-//
-//	// updates.xml example for cross platform executable:
-//	<?xml version='1.0' encoding='UTF-8'?>
-//	<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-//	  <app appid='tld.domain.sub.app.name'>
-//	    <updatecheck codebase='https://sub.domain.tld/app.download.all' version='1.0.0' />
-//	  </app>
-//	</gupdate>
-//
-//	// updates.xml example for individual platform executable:
-//	<?xml version='1.0' encoding='UTF-8'?>
-//	<gupdate xmlns='http://www.google.com/update2/response' protocol='2.0'>
-//	  <app appid='tld.domain.sub.app.name'>
-//	    <updatecheck codebase='https://sub.domain.tld/app.download.darwin' os='darwin' version='1.0.0' />
-//	    <updatecheck codebase='https://sub.domain.tld/app.download.linux' os='linux' version='1.0.0' />
-//	    <updatecheck codebase='https://sub.domain.tld/app.download.exe' os='windows' version='1.0.0' />
-//	  </app>
-//	</gupdate>
-//
-//	// It will do daily update check.
-//	messaging := (&host.Host{
-//	  AppName:   "tld.domain.sub.app.name",
-//	  UpdateUrl: "https://sub.domain.tld/updates.xml", // It follows [update manifest][2]
-//	  Version:   "1.0.0",                              // Current version, it must follow [SemVer][6]
-//	}).Init()
+//		// When you need to uninstall.
+//		host.Uninstall()
 package host
 
 import (
@@ -120,15 +94,15 @@ type H map[string]interface{}
 // Host represents a single native messaging host, where all native messaging
 // host operations can be done.
 type Host struct {
-	AppName     string           `json:"name"`
-	AppDesc     string           `json:"description"`
-	ExecName    string           `json:"path"`
-	AppType     string           `json:"type"`
-	AllowedExts []string         `json:"allowed_origins"`
-	AutoUpdate  bool             `json:"-"`
-	ByteOrder   binary.ByteOrder `json:"-"`
-	UpdateUrl   string           `json:"-"`
-	Version     string           `json:"-"`
+	AppName  string `json:"name"`
+	AppDesc  string `json:"description"`
+	ExecName string `json:"path"`
+	AppType  string `json:"type"`
+	// this is used by firefox
+	AllowedExtensions []string `json:"allowed_extensions"`
+	// this is used by chrome
+	AllowedOrigins []string         `json:"allowed_origins"`
+	ByteOrder      binary.ByteOrder `json:"-"`
 }
 
 // Init sets default value to its fields and return the Host pointer back.
@@ -173,10 +147,6 @@ func (h *Host) Init() *Host {
 
 	if h.ByteOrder == nil {
 		h.ByteOrder = binary.LittleEndian
-	}
-
-	if h.UpdateUrl != "" && h.Version != "" {
-		h.AutoUpdate = true
 	}
 
 	return h
@@ -229,8 +199,6 @@ func (h *Host) readHeader(reader io.Reader) (uint32, error) {
 
 	if err := binary.Read(reader, h.ByteOrder, &length); err != nil {
 		if err == io.EOF {
-			h.AutoUpdateCheck()
-
 			// Exit gracefully.
 			runtimeGoexit()
 		}

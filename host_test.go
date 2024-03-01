@@ -60,35 +60,32 @@ func TestHostInit(t *testing.T) {
 	}
 
 	t.Run("with default", compare((&Host{}).Init(), &Host{
-		AppName:    "native-messaging-host",
-		AppDesc:    "native-messaging-host",
-		AppType:    "stdio",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.LittleEndian,
+		AppName:   "native-messaging-host",
+		AppDesc:   "native-messaging-host",
+		AppType:   "stdio",
+		ExecName:  absExec,
+		ByteOrder: binary.LittleEndian,
 	}))
 
 	t.Run("with AppName", compare((&Host{
 		AppName: "my.app.name",
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "my.app.name",
-		AppType:    "stdio",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.LittleEndian,
+		AppName:   "my.app.name",
+		AppDesc:   "my.app.name",
+		AppType:   "stdio",
+		ExecName:  absExec,
+		ByteOrder: binary.LittleEndian,
 	}))
 
 	t.Run("with AppName, AppDesc", compare((&Host{
 		AppName: "my.app.name",
 		AppDesc: "Description of my app",
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "Description of my app",
-		AppType:    "stdio",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.LittleEndian,
+		AppName:   "my.app.name",
+		AppDesc:   "Description of my app",
+		AppType:   "stdio",
+		ExecName:  absExec,
+		ByteOrder: binary.LittleEndian,
 	}))
 
 	t.Run("with AppName, AppDesc, AppType", compare((&Host{
@@ -96,12 +93,11 @@ func TestHostInit(t *testing.T) {
 		AppDesc: "Description of my app",
 		AppType: "any",
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "Description of my app",
-		AppType:    "any",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.LittleEndian,
+		AppName:   "my.app.name",
+		AppDesc:   "Description of my app",
+		AppType:   "any",
+		ExecName:  absExec,
+		ByteOrder: binary.LittleEndian,
 	}))
 
 	t.Run("with AppName, AppDesc, AppType, ByteOrder", compare((&Host{
@@ -110,12 +106,11 @@ func TestHostInit(t *testing.T) {
 		AppType:   "any",
 		ByteOrder: binary.BigEndian,
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "Description of my app",
-		AppType:    "any",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.BigEndian,
+		AppName:   "my.app.name",
+		AppDesc:   "Description of my app",
+		AppType:   "any",
+		ExecName:  absExec,
+		ByteOrder: binary.BigEndian,
 	}))
 
 	t.Run("with AppName, AppDesc, AppType, ByteOrder, UpdateUrl", compare((&Host{
@@ -123,15 +118,12 @@ func TestHostInit(t *testing.T) {
 		AppDesc:   "Description of my app",
 		AppType:   "any",
 		ByteOrder: binary.BigEndian,
-		UpdateUrl: "https://www.google.com",
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "Description of my app",
-		AppType:    "any",
-		AutoUpdate: false,
-		ExecName:   absExec,
-		ByteOrder:  binary.BigEndian,
-		UpdateUrl:  "https://www.google.com",
+		AppName:   "my.app.name",
+		AppDesc:   "Description of my app",
+		AppType:   "any",
+		ExecName:  absExec,
+		ByteOrder: binary.BigEndian,
 	}))
 
 	t.Run("with AppName, AppDesc, AppType, ByteOrder, UpdateUrl, Version", compare((&Host{
@@ -139,17 +131,12 @@ func TestHostInit(t *testing.T) {
 		AppDesc:   "Description of my app",
 		AppType:   "any",
 		ByteOrder: binary.BigEndian,
-		UpdateUrl: "https://www.google.com",
-		Version:   "0.0.0",
 	}).Init(), &Host{
-		AppName:    "my.app.name",
-		AppDesc:    "Description of my app",
-		AppType:    "any",
-		AutoUpdate: true,
-		ExecName:   absExec,
-		ByteOrder:  binary.BigEndian,
-		UpdateUrl:  "https://www.google.com",
-		Version:    "0.0.0",
+		AppName:   "my.app.name",
+		AppDesc:   "Description of my app",
+		AppType:   "any",
+		ExecName:  absExec,
+		ByteOrder: binary.BigEndian,
 	}))
 }
 

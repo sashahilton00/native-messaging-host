@@ -11,8 +11,6 @@
 package host
 
 import (
-	"encoding/json"
-	"errors"
 	"github.com/google/go-cmp/cmp"
 	"io/ioutil"
 	"log"
@@ -23,9 +21,12 @@ import (
 func TestManifestTargetName(t *testing.T) {
 	t.Parallel()
 
-	got := (&Host{AppName: "app"}).getTargetName()
+	got := (&Host{AppName: "app"}).getTargetNames()
 	homeDir, _ := os.UserHomeDir()
-	want := homeDir + "/.config/google-chrome/NativeMessagingHosts/app.json"
+	want := []string{
+		homeDir + "/.config/google-chrome/NativeMessagingHosts/app.json",
+		homeDir + "/.mozilla/native-messaging-hosts/app.json",
+	}
 
 	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("mismatch (-want +got):\n%s", diff)
@@ -41,49 +42,51 @@ func TestManifestInstall(t *testing.T) {
 		return func(t *testing.T) {
 			got := &Host{}
 			want := &Host{AppName: "install"}
-			targetName := want.getTargetName()
+			targetNames := want.getTargetNames()
 
-			switch wantErr {
-			case 0:
-				if uninstall {
-					os.Remove(targetName)
-				}
-			case 1:
-				oldOsMkdirAll := osMkdirAll
-				defer func() { osMkdirAll = oldOsMkdirAll }()
-				osMkdirAll = func(string, os.FileMode) error {
-					return errors.New("MkdirAll error")
-				}
-			case 2:
-				oldWriteFile := ioutilWriteFile
-				defer func() { ioutilWriteFile = oldWriteFile }()
-				ioutilWriteFile = func(string, []byte, os.FileMode) error {
-					return errors.New("WriteFile error")
-				}
-			}
-
-			if err := want.Install(); wantErr == 0 && err != nil {
-				t.Errorf("install error %s: %v", targetName, err)
-			} else if wantErr > 0 && err == nil {
-				t.Fatalf("want error: %s", targetName)
-			}
-
-			if wantErr == 0 {
-				if _, err := os.Stat(targetName); err != nil {
-					t.Errorf("missing file %s: %v", targetName, err)
+			for _, targetName := range targetNames {
+				switch wantErr {
+				case 0:
+					if uninstall {
+						os.Remove(targetName)
+					}
+				case 1:
+					oldOsMkdirAll := osMkdirAll
+					defer func() { osMkdirAll = oldOsMkdirAll }()
+					osMkdirAll = func(string, os.FileMode) error {
+						return errors.New("MkdirAll error")
+					}
+				case 2:
+					oldWriteFile := ioutilWriteFile
+					defer func() { ioutilWriteFile = oldWriteFile }()
+					ioutilWriteFile = func(string, []byte, os.FileMode) error {
+						return errors.New("WriteFile error")
+					}
 				}
 
-				manifest, err := ioutil.ReadFile(targetName)
-				if err != nil {
-					t.Errorf("read manifest error %s: %v", targetName, err)
+				if err := want.Install(); wantErr == 0 && err != nil {
+					t.Errorf("install error %s: %v", targetName, err)
+				} else if wantErr > 0 && err == nil {
+					t.Fatalf("want error: %s", targetName)
 				}
 
-				if err := json.Unmarshal(manifest, got); err != nil {
-					t.Errorf("unmarshal manifest error %s: %v", targetName, err)
-				}
+				if wantErr == 0 {
+					if _, err := os.Stat(targetName); err != nil {
+						t.Errorf("missing file %s: %v", targetName, err)
+					}
 
-				if diff := cmp.Diff(want, got); diff != "" {
-					t.Errorf("mismatch (-want +got):\n%s", diff)
+					manifest, err := ioutil.ReadFile(targetName)
+					if err != nil {
+						t.Errorf("read manifest error %s: %v", targetName, err)
+					}
+
+					if err := json.Unmarshal(manifest, got); err != nil {
+						t.Errorf("unmarshal manifest error %s: %v", targetName, err)
+					}
+
+					if diff := cmp.Diff(want, got); diff != "" {
+						t.Errorf("mismatch (-want +got):\n%s", diff)
+					}
 				}
 			}
 		}
@@ -104,16 +107,18 @@ func TestManifestUninstall(t *testing.T) {
 			oldRuntimeGoexit := runtimeGoexit
 			defer func() { runtimeGoexit = oldRuntimeGoexit }()
 			runtimeGoexit = func() { exited = true }
-			targetName := h.getTargetName()
+			targetNames := h.getTargetNames()
 
 			h.Uninstall()
 
-			if _, err := os.Stat(targetName); err == nil {
-				t.Errorf("uninstall failed %s", targetName)
-			}
+			for _, targetName := range targetNames {
+				if _, err := os.Stat(targetName); err == nil {
+					t.Errorf("uninstall failed %s", targetName)
+				}
 
-			if !exited {
-				t.Errorf("uninstall did not exit")
+				if !exited {
+					t.Errorf("uninstall did not exit")
+				}
 			}
 		}
 	}
@@ -123,7 +128,7 @@ func TestManifestUninstall(t *testing.T) {
 	t.Run("with nothing installed", compare(h))
 
 	if err := h.Install(); err != nil {
-		t.Errorf("install error %s: %v", h.getTargetName(), err)
+		t.Errorf("install error %s: %v", h.getTargetNames(), err)
 	}
 
 	t.Run("with installed", compare(h))
