@@ -63,7 +63,7 @@ func TestManifestInstall(t *testing.T) {
 					}
 				}
 
-				if err := want.Install(); wantErr == 0 && err != nil {
+				if err := want.InstallManifest(); wantErr == 0 && err != nil {
 					t.Errorf("install error %s: %v", targetName, err)
 				} else if wantErr > 0 && err == nil {
 					t.Fatalf("want error: %s", targetName)
@@ -108,7 +108,7 @@ func TestManifestUninstall(t *testing.T) {
 			runtimeGoexit = func() { exited = true }
 			targetNames := h.getTargetNames()
 
-			h.Uninstall()
+			h.UninstallManifest()
 
 			for _, targetName := range targetNames {
 				if _, err := os.Stat(targetName); err == nil {
@@ -126,7 +126,7 @@ func TestManifestUninstall(t *testing.T) {
 
 	t.Run("with nothing installed", compare(h))
 
-	if err := h.Install(); err != nil {
+	if err := h.InstallManifest(); err != nil {
 		t.Errorf("install error %s: %v", h.getTargetNames(), err)
 	}
 

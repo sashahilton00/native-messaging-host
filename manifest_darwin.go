@@ -1,4 +1,4 @@
-// manifest_darwin.go - Install and Uninstall manifest file for OS X.
+// manifest_darwin.go - InstallManifest and Uninstall manifest file for OS X.
 // Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
@@ -44,11 +44,11 @@ func (h *Host) getTargetNames() []string {
 	return targets
 }
 
-// Install creates native-messaging manifest file on appropriate location. It
+// InstallManifest creates native-messaging manifest file on appropriate location. It
 // will return error when it come across one.
 //
 // See https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location-nix
-func (h *Host) Install() error {
+func (h *Host) InstallManifest() error {
 	manifest, _ := json.MarshalIndent(h, "", "  ")
 
 	targetNames := h.getTargetNames()
@@ -72,7 +72,7 @@ func (h *Host) Install() error {
 //
 // See https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location-nix
 // https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Native_manifests#manifest_location
-func (h *Host) Uninstall() {
+func (h *Host) UninstallManifest() {
 	targetNames := h.getTargetNames()
 
 	for _, targetName := range targetNames {

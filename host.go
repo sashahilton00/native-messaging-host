@@ -43,7 +43,7 @@
 //	// Log request.
 //	log.Printf("request: %+v", request)
 //
-// * Install and Uninstall Hooks
+// * InstallManifest and Uninstall Hooks
 //
 //		// AllowedOrigins is a list of extensions that should have access to the native messaging host. AllowedExtensions is the firefox equivalent
 //		// See [native messaging manifest][7]
@@ -56,7 +56,7 @@
 //		...
 //
 //		// When you need to install.
-//		if err := messaging.Install(); err != nil {
+//		if err := messaging.InstallManifest(); err != nil {
 //		  log.Printf("install error: %v", err)
 //		}
 //

@@ -1,4 +1,4 @@
-// manifest_windows.go - Install and Uninstall manifest file for Windows.
+// manifest_windows.go - InstallManifest and Uninstall manifest file for Windows.
 // Copyright (c) 2018 - 2024  Sasha Hilton <sashahilton00@users.noreply.github.com>
 //
 // This Source Code Form is subject to the terms of the Mozilla Public
@@ -15,12 +15,12 @@ import (
 	"path/filepath"
 )
 
-// Install creates native-messaging manifest file on appropriate location and
+// InstallManifest creates native-messaging manifest file on appropriate location and
 // add an entry in windows registry. It will return error when it come across
 // one.
 //
 // See https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location
-func (h *Host) Install() error {
+func (h *Host) InstallManifest() error {
 	manifest, _ := json.MarshalIndent(h, "", "  ")
 	registryName := `Software\Google\Chrome\NativeMessagingHosts\` + h.AppName
 	targetName := filepath.Join(filepath.Dir(h.ExecName), h.AppName+".json")
@@ -49,7 +49,7 @@ func (h *Host) Install() error {
 // manifest file from installed location.
 //
 // See https://developer.chrome.com/extensions/nativeMessaging#native-messaging-host-location
-func (h *Host) Uninstall() {
+func (h *Host) UninstallManifest() {
 	registryName := `Software\Google\Chrome\NativeMessagingHosts\` + h.AppName
 	targetName := filepath.Join(filepath.Dir(h.ExecName), h.AppName+".json")
 
